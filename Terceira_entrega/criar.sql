@@ -46,7 +46,7 @@ CREATE TABLE Channel (
     ID                    INTEGER PRIMARY KEY ,
     URL                   TEXT ,
     userID                INTEGER REFERENCES User (ID),
-    number_of_subscribers INTEGER CHECK (number_of_subscribers > 0) NOT NULL,
+    number_of_subscribers INTEGER CHECK (number_of_subscribers >= 0) NOT NULL,
     number_of_views       INTEGER CHECK (number_of_views >= 0) NOT NULL,
     avatar                TEXT NOT NULL,
     description           TEXT,
@@ -62,7 +62,6 @@ CREATE TABLE Recommended (
     CHECK (ID1 <> ID2),
     PRIMARY KEY (ID1, ID2)
 );
-
 
 
 CREATE TABLE Comment (
