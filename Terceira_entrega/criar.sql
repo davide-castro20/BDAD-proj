@@ -20,6 +20,7 @@ drop table if exists Tag;
 drop table if exists NumberOfTimesViewed;
 drop table if exists ViewVideo;
 drop table if exists PlaylistVideos;
+drop table if exists Subscribes;
 
 
 CREATE TABLE User (
@@ -32,7 +33,6 @@ CREATE TABLE User (
 );
 
 
-drop table if exists Subscribes;
 CREATE TABLE Subscribes (
     IDUser  INTEGER  REFERENCES User (ID) ON DELETE SET NULL
                                      ON UPDATE CASCADE,
