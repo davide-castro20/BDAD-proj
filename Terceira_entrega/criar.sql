@@ -1,15 +1,12 @@
 PRAGMA foreign_keys=ON;
 
 drop table if exists User;
-drop table if exists Creation;
 drop table if exists Channel;
 drop table if exists Recommended;
 drop table if exists Comment;
 drop table if exists Replies;
 drop table if exists Announcement;
-drop table if exists Commented;
 drop table if exists Upload;
-drop table if exists AnnouncementUpload;
 drop table if exists Video;
 drop table if exists Playlist;
 drop table if exists MonetizedVideo;
@@ -18,10 +15,10 @@ drop table if exists PromotingEntity;
 drop table if exists Tag;
 drop table if exists TagVideo;
 drop table if exists TagChannel;
-drop table if exists NumberOfTimesViewed;
 drop table if exists ViewVideo;
 drop table if exists PlaylistVideos;
 drop table if exists Subscribes;
+drop table if exists PlayingAd;
 
 
 
@@ -47,7 +44,8 @@ CREATE TABLE Subscribes (
 CREATE TABLE Channel (
     ID                    INTEGER PRIMARY KEY ,
     URL                   TEXT ,
-    userID                INTEGER REFERENCES User (ID),
+    userID                INTEGER REFERENCES User (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
     number_of_subscribers INTEGER CHECK (number_of_subscribers >= 0) NOT NULL,
     number_of_views       INTEGER CHECK (number_of_views >= 0) NOT NULL,
     avatar                TEXT NOT NULL,
@@ -72,16 +70,21 @@ CREATE TABLE Comment (
     number_of_likes     INTEGER CHECK(number_of_likes >= 0),
     number_of_dislikes  INTEGER CHECK(number_of_dislikes >= 0),
     date                DATE,
-    IDannouncement     INTEGER REFERENCES Announcement (ID) DEFAULT NULL, 
-    IDvideo            INTEGER REFERENCES Video (ID) DEFAULT NULL,
-    IDuser              INTEGER REFERENCES User (ID)
+    IDannouncement     INTEGER REFERENCES Announcement (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE DEFAULT NULL, 
+    IDvideo            INTEGER REFERENCES Video (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE DEFAULT NULL,
+    IDuser              INTEGER REFERENCES User (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
     CHECK((IDannouncement = NULL and IDvideo <> NULL) or (IDvideo = NULL and IDannouncement <> NULL))
 );
 
 
 CREATE TABLE Replies (
-    IDReply         INTEGER PRIMARY KEY REFERENCES Comment (ID),
-    IDMainComment   INTEGER REFERENCES Comment (ID)
+    IDReply         INTEGER PRIMARY KEY REFERENCES Comment (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
+    IDMainComment   INTEGER REFERENCES Comment (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE
 );
 
 
@@ -91,7 +94,8 @@ CREATE TABLE Announcement (
     content TEXT,
     image TEXT,
     number_of_likes INTEGER NOT NULL DEFAULT 0,
-    IDchannel text REFERENCES Channel (ID),
+    IDchannel text REFERENCES Channel (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
     upload_date DATE,   
     CHECK((length(content) > 0) or (image<>NULL))
 );
@@ -103,7 +107,8 @@ CREATE TABLE Video (
     title text CHECK(length(title) > 0) NOT NULL,
     thumbnail TEXT NOT NULL,
     description text,
-    IDchannel INTEGER REFERENCES Channel (ID),
+    IDchannel INTEGER REFERENCES Channel (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
     number_of_likes INTEGER NOT NULL DEFAULT 0,
     number_of_dislikes INTEGER NOT NULL DEFAULT 0,
     uploadDate  TEXT
@@ -113,7 +118,8 @@ CREATE TABLE Playlist (
     ID                  INTEGER PRIMARY KEY ,
     URL                 TEXT ,
     name                TEXT NOT NULL,
-    IDuser                  INTEGER REFERENCES User (ID)
+    IDuser                  INTEGER REFERENCES User (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE
 );
 
 
@@ -126,7 +132,8 @@ CREATE TABLE MonetizedVideo (
 CREATE TABLE Ad (
     ID     INTEGER  PRIMARY KEY REFERENCES Video (ID) ON DELETE SET NULL ON UPDATE CASCADE,
     payment     INTEGER  CHECK (payment >= 0),
-    IDPromotingEntity     INTEGER    REFERENCES PromotingEntity (ID)
+    IDPromotingEntity     INTEGER    REFERENCES PromotingEntity (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE
 );
 
 
@@ -156,7 +163,8 @@ CREATE TABLE ViewVideo (
     reaction    INTEGER     DEFAULT 0 CHECK (reaction = 1 OR reaction = -1 OR reaction = 0),
     view_date   DATE,
     IDvideo   INTEGER     REFERENCES Video (ID) ON DELETE SET NULL ON UPDATE CASCADE,
-    IDuser  INTEGER     REFERENCES  User (ID),
+    IDuser  INTEGER     REFERENCES  User (ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
     PRIMARY KEY(IDvideo, IDuser)
 );
 
@@ -168,8 +176,10 @@ CREATE TABLE PlaylistVideos (
 );
 
 create table PlayingAd (
-	IDad INTEGER REFERENCES Ad(ID),
-	IDmonetizedVideo INTEGER REFERENCES MonetizedVideo(ID), 
+	IDad INTEGER REFERENCES Ad(ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE,
+	IDmonetizedVideo INTEGER REFERENCES MonetizedVideo(ID) ON DELETE SET NULL
+                                     ON UPDATE CASCADE, 
 	time TIME,
-    PRIMARY KEY(IDad, IDmonetizedVideo)
+    PRIMARY KEY(IDad, IDmonetizedVideo, time)
 );
