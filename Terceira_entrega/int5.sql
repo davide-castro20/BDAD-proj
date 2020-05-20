@@ -2,6 +2,6 @@
 .headers	on
 .nullvalue	NULL
 
-select idComment, content, idMainComment
+select ID, content, idMainComment
 from Comment left outer join Replies
-on idComment=idReply;
+on ID=idReply;
