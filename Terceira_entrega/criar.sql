@@ -167,3 +167,9 @@ CREATE TABLE PlaylistVideos (
     PRIMARY KEY(IDplaylist, IDvideo)
 );
 
+create table PlayingAd (
+	IDad INTEGER REFERENCES Ad(ID),
+	IDmonetizedVideo INTEGER REFERENCES MonetizedVideo(ID), 
+	time TIME,
+    PRIMARY KEY(IDad, IDmonetizedVideo)
+);
