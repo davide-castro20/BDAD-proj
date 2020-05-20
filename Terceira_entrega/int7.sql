@@ -13,7 +13,7 @@ FROM USER INNER JOIN
     WHERE(IDmonetizedVideo = MonetizedVideo.ID AND ViewVideo.time_viewed > PlayingAd.time)
 ) AS  ReachedAds
     ON (ReachedAds.UserID = User.ID)
-WHERE (User.monthly_subscription)
+WHERE (User.monthly_subscription = 0)
 GROUP BY (ReachedAds.AdID)
 ) As ViewedAds
 WHERE

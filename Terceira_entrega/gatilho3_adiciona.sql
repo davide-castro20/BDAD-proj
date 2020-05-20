@@ -3,8 +3,8 @@ AFTER INSERT ON ViewVideo
 FOR EACH ROW 
 BEGIN
     UPDATE Video
-    SET number_of_likes = number_of_likes + 1
-    WHERE New.IDvideo = Video.ID AND New.reaction = 1;
+    SET number_of_likes = number_of_likes + New.reaction
+    WHERE New.IDvideo = Video.ID
 
     UPDATE MonetizedVideo
     SET total_payment = total_payment + 
@@ -14,5 +14,5 @@ BEGIN
         FROM PlayingAd
         WHERE IDmonetizedVideo = New.IDvideo AND PlayingAd.time < '5:00' ) AS AdsPlayed 
     ON (Ad.ID = AdsPlayed.IDad) )
-    WHERE (New.IDuser IN (SELECT ID FROM User WHERE monthly_subscription < 100)) and (New.IDvideo = MonetizedVideo.ID);
+    WHERE (New.IDuser IN (SELECT ID FROM User WHERE monthly_subscription = 0)) and (New.IDvideo = MonetizedVideo.ID);
 END;
