@@ -2,7 +2,9 @@
 .headers	on
 .nullvalue	NULL
 
-select title, count(IDuser)
+-- Number of views per video 
+
+select title, count(IDuser) as number_of_views
 from Video inner join ViewVideo
 on Video.ID=IDvideo
 group by IDvideo;
