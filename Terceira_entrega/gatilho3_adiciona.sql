@@ -1,10 +1,14 @@
+-- When a user views a video, the number_of_likes of that video is update according to the reaction of the user.
+-- Also, if the video is monetized, the revenue of the video is updated according to the payment of the ads which played during the time the user viewed the video.
+ 
+
 CREATE TRIGGER ViewVideoTrigger
 AFTER INSERT ON ViewVideo
 FOR EACH ROW 
 BEGIN
     UPDATE Video
     SET number_of_likes = number_of_likes + New.reaction
-    WHERE New.IDvideo = Video.ID
+    WHERE New.IDvideo = Video.ID;
 
     UPDATE MonetizedVideo
     SET total_payment = total_payment + 
