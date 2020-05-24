@@ -4,6 +4,7 @@
 
 -- Channels with positive number of likes
 
-select title, number_of_likes, number_of_dislikes
-from Video
-where number_of_likes > number_of_dislikes;
+select ID, content, IFNULL(idMainComment, '--') AS InResponseTo
+from Comment left outer join Replies
+on ID=idReply
+ORDER BY InResponseTo DESC;
