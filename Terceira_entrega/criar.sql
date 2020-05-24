@@ -145,7 +145,7 @@ CREATE TABLE PromotingEntity (
 
 CREATE TABLE Tag (
     ID      INTEGER PRIMARY KEY,
-    name    TEXT
+    name    TEXT UNIQUE
 );
 
 CREATE TABLE TagVideo (
